@@ -1,7 +1,12 @@
 package co.com.sofka.page.function;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+import java.time.Duration;
+import java.util.List;
 
 public class FunctionsCommons {
     protected final WebDriver driver;
@@ -10,8 +15,74 @@ public class FunctionsCommons {
         this.driver = driver;
     }
 
-    protected void typeInto(By locator, String value){
-        driver.findElement(locator).sendKeys(value);
+    protected void typeInto(By locator, String text) {
+        driver.findElement(locator).sendKeys(text);
+    }
 
+    protected void typeInto(WebElement element, String text) {
+        element.sendKeys(text);
+    }
+
+    protected void clickSelection(By locator) {
+        driver.findElement(locator).click();
+    }
+
+    protected void clickSelection(WebElement element) {
+        element.click();
+    }
+
+    protected void sendKeys(By locator, String text) {
+        driver.findElement(locator).sendKeys(text);
+    }
+
+    protected void sendKeys(WebElement element, String text) {
+        element.sendKeys(text);
+    }
+
+    protected void scrollTo(By locator) {
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
+        jse.executeScript("arguments[0].scrollIntoView();", driver.findElement(locator));
+    }
+
+    protected void cleanField(WebElement element) {
+        element.clear();
+    }
+
+    protected void scrollTo(WebElement element) {
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
+        jse.executeScript("arguments[0].scrollIntoView();", element);
+    }
+
+    protected String getText(By locator) {
+        return driver.findElement(locator).getText();
+    }
+
+    protected String getText(WebElement element) {
+        return element.getText();
+    }
+
+    protected String getText(Alert alert) {
+        return alert.getText();
+    }
+
+    protected List<WebElement> findElements(By locator) {
+        return driver.findElements(locator);
+    }
+
+    protected void limpiarCampo(By locator){driver.findElement(locator).clear();}
+
+    protected void limpiarCampo(WebElement locator){locator.clear();}
+
+    public void waitSeconds(int seconds) {
+        //NO FUNCIONA CON MODULOS WEBS CON ALERTAS
+        Wait<WebDriver> wait =
+                new FluentWait<>(driver)
+                        .withTimeout(Duration.ofSeconds(seconds))
+                        .pollingEvery(Duration.ofMillis(300))
+                        .ignoring(ElementNotInteractableException.class);
+        try{
+            wait.until(ExpectedConditions.alertIsPresent());
+        }catch (Exception e){
+        }
     }
 }
